@@ -1,0 +1,22 @@
+server:
+  http:
+    addr: 0.0.0.0:8753
+    timeout: 1s
+  grpc:
+    addr: 0.0.0.0:9200
+    timeout: 1s
+data:
+  database:
+    source: root:dangerous@tcp(127.0.0.1:3306)/realowrld01?charset=utf8mb4&parseTime=True&loc=Local
+  redis:
+    addr: 127.0.0.1:6379
+    read_timeout: 0.2s
+    write_timeout: 0.2s
+    db: 0
+trace:
+  endpoint: http://127.0.0.1:16686/api/traces
+registry:
+    consul:
+      address: 127.0.0.1:8500
+      scheme: http
+

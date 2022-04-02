@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package helloworld.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "meeting/api/meeting/v1;v1";
+
+// The greeting service definition.
+service Greeter {
+  rpc Create (MeetingRequest) returns (MeetingReploy){
+        option (google.api.http) = {
+          post: "/meeting/create"
+          body:"*"
+        };
+  }
+
+}
+
+message MeetingRequest{
+  message Meeting{
+    string Name=1;
+    string Address=2;
+    string AppDeatil=3;
+  }
+    Meeting meeting=1;
+}
+message MeetingReploy{
+  string success=1;
+  string msg=2;
+  int64 saveRecode=3;
+}
+
+

@@ -1,0 +1,55 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/apps/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: Greeter API
+    description: The greeting service definition.
+    version: 0.0.1
+paths:
+    /meeting/create:
+        post:
+            tags:
+                - Greeter
+            operationId: Greeter_Create
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/MeetingRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MeetingReploy'
+components:
+    schemas:
+        MeetingReploy:
+            type: object
+            properties:
+                success:
+                    type: string
+                msg:
+                    type: string
+                saveRecode:
+                    type: integer
+                    format: int64
+        MeetingRequest:
+            type: object
+            properties:
+                meeting:
+                    $ref: '#/components/schemas/MeetingRequest_Meeting'
+        MeetingRequest_Meeting:
+            type: object
+            properties:
+                Name:
+                    type: string
+                Address:
+                    type: string
+                AppDeatil:
+                    type: string
+tags:
+    - name: Greeter
