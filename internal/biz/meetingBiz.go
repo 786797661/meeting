@@ -36,6 +36,6 @@ func NewMeetingGreeterUsecase(repo MeetingRepo, logger log.Logger) *MeetingGreet
 
 // CreateGreeter creates a Greeter, and returns the new Greeter.
 func (uc *MeetingGreeterUsecase) Create(ctx context.Context, req *v1.MeetingRequest) (*v1.MeetingReploy, error) {
-	uc.log.WithContext(ctx).Infof("Create: %v", req.Meeting.Name)
+	//uc.log.WithContext(ctx).Infof("Create: %v", req.Meeting.Name)
 	return uc.repo.Create(ctx, req)
 }

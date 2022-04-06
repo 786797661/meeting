@@ -26,7 +26,7 @@ var (
 	// Name is the name of the compiled software.
 	Name = "meeting.meeting.service"
 	// Version is the version of the compiled software.
-	Version string
+	Version = "meeting.v1"
 	// flagconf is the config flag.
 	flagconf string
 
@@ -101,6 +101,10 @@ func main() {
 	if err := c.Scan(&bc); err != nil {
 		panic(err)
 	}
+	//加入链路追踪的配置
+	if err := setTracerProvider(bc.Trace.Endpoint); err != nil {
+		panic(err)
+	}
 
 	// consul 的引入
 	var rc conf.Registry
@@ -112,11 +116,6 @@ func main() {
 	}
 
 	defer cleanup()
-
-	//加入链路追踪的配置
-	if err := setTracerProvider(bc.Trace.Endpoint); err != nil {
-		panic(err)
-	}
 
 	// start and wait for stop signal
 	if err := app.Run(); err != nil {

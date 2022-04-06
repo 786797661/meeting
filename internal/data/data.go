@@ -10,7 +10,7 @@ import (
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewRedis, NewMeetingRepo)
+var ProviderSet = wire.NewSet(NewData, NewDB, NewRedis, NewMeetingRepo)
 
 // Data .
 type Data struct {
@@ -19,12 +19,12 @@ type Data struct {
 	rdb *redis.Client
 }
 
-// NewData .
-func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
+// NewData .实例化Data 用于数据库，redis对象的实例话
+func NewData(c *conf.Data, logger log.Logger, db *gorm.DB, rdb *redis.Client) (*Data, func(), error) {
 	cleanup := func() {
 		log.NewHelper(logger).Info("closing the data resources")
 	}
-	return &Data{}, cleanup, nil
+	return &Data{db: db, rdb: rdb}, cleanup, nil
 }
 
 //NewDB
@@ -38,6 +38,7 @@ func NewDB(c *conf.Data) *gorm.DB {
 }
 
 func NewRedis(c *conf.Data) *redis.Client {
+	println(c.Redis.Addr, c.Redis.Db)
 	rdb := redis.NewClient(&redis.Options{
 		Addr:         c.Redis.Addr,
 		DB:           int(c.Redis.Db),
@@ -48,9 +49,10 @@ func NewRedis(c *conf.Data) *redis.Client {
 	//心跳
 	pong, err := rdb.Ping().Result()
 	log.Info(pong, err) // Output: PONG <nil>
-
-	if err := rdb.Close(); err != nil {
-		log.Error(err)
-	}
+	println(pong, err)
+	//if err := rdb.Close(); err != nil {
+	//	log.Error(err)
+	//	println(err)
+	//}
 	return rdb
 }

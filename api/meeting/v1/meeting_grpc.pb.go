@@ -18,86 +18,86 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// GreeterClient is the client API for Greeter service.
+// MeetingClient is the client API for Meeting service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type GreeterClient interface {
+type MeetingClient interface {
 	Create(ctx context.Context, in *MeetingRequest, opts ...grpc.CallOption) (*MeetingReploy, error)
 }
 
-type greeterClient struct {
+type meetingClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewGreeterClient(cc grpc.ClientConnInterface) GreeterClient {
-	return &greeterClient{cc}
+func NewMeetingClient(cc grpc.ClientConnInterface) MeetingClient {
+	return &meetingClient{cc}
 }
 
-func (c *greeterClient) Create(ctx context.Context, in *MeetingRequest, opts ...grpc.CallOption) (*MeetingReploy, error) {
+func (c *meetingClient) Create(ctx context.Context, in *MeetingRequest, opts ...grpc.CallOption) (*MeetingReploy, error) {
 	out := new(MeetingReploy)
-	err := c.cc.Invoke(ctx, "/helloworld.v1.Greeter/Create", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/helloworld.v1.Meeting/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// GreeterServer is the server API for Greeter service.
-// All implementations must embed UnimplementedGreeterServer
+// MeetingServer is the server API for Meeting service.
+// All implementations must embed UnimplementedMeetingServer
 // for forward compatibility
-type GreeterServer interface {
+type MeetingServer interface {
 	Create(context.Context, *MeetingRequest) (*MeetingReploy, error)
-	mustEmbedUnimplementedGreeterServer()
+	mustEmbedUnimplementedMeetingServer()
 }
 
-// UnimplementedGreeterServer must be embedded to have forward compatible implementations.
-type UnimplementedGreeterServer struct {
+// UnimplementedMeetingServer must be embedded to have forward compatible implementations.
+type UnimplementedMeetingServer struct {
 }
 
-func (UnimplementedGreeterServer) Create(context.Context, *MeetingRequest) (*MeetingReploy, error) {
+func (UnimplementedMeetingServer) Create(context.Context, *MeetingRequest) (*MeetingReploy, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
-func (UnimplementedGreeterServer) mustEmbedUnimplementedGreeterServer() {}
+func (UnimplementedMeetingServer) mustEmbedUnimplementedMeetingServer() {}
 
-// UnsafeGreeterServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to GreeterServer will
+// UnsafeMeetingServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to MeetingServer will
 // result in compilation errors.
-type UnsafeGreeterServer interface {
-	mustEmbedUnimplementedGreeterServer()
+type UnsafeMeetingServer interface {
+	mustEmbedUnimplementedMeetingServer()
 }
 
-func RegisterGreeterServer(s grpc.ServiceRegistrar, srv GreeterServer) {
-	s.RegisterService(&Greeter_ServiceDesc, srv)
+func RegisterMeetingServer(s grpc.ServiceRegistrar, srv MeetingServer) {
+	s.RegisterService(&Meeting_ServiceDesc, srv)
 }
 
-func _Greeter_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Meeting_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MeetingRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GreeterServer).Create(ctx, in)
+		return srv.(MeetingServer).Create(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/helloworld.v1.Greeter/Create",
+		FullMethod: "/helloworld.v1.Meeting/Create",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GreeterServer).Create(ctx, req.(*MeetingRequest))
+		return srv.(MeetingServer).Create(ctx, req.(*MeetingRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Greeter_ServiceDesc is the grpc.ServiceDesc for Greeter service.
+// Meeting_ServiceDesc is the grpc.ServiceDesc for Meeting service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Greeter_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "helloworld.v1.Greeter",
-	HandlerType: (*GreeterServer)(nil),
+var Meeting_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "helloworld.v1.Meeting",
+	HandlerType: (*MeetingServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Create",
-			Handler:    _Greeter_Create_Handler,
+			Handler:    _Meeting_Create_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

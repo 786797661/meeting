@@ -7,15 +7,18 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	v1 "meeting/api/meeting/v1"
 	"meeting/internal/biz"
-	"time"
 )
 
 type Meeting struct {
-	Id        int64  `gorm:"primarykey"`
+	ID        int64  `gorm:"column:id;primarykey"`
 	Name      string `gorm:"column:name"`
 	Address   string `gorm:"column:Address"`
-	state     string `gorm:"column:state"`
-	appdetail string `gorm:"column:appdetail"`
+	State     string `gorm:"column:state"`
+	AppDeatil string `gorm:"column:appdetail"`
+}
+
+func (Meeting) TableName() string {
+	return "scholar_meeting"
 }
 
 type meetingRepo struct {
@@ -32,15 +35,31 @@ func NewMeetingRepo(data *Data, logger log.Logger) biz.MeetingRepo {
 }
 
 func (dac *meetingRepo) Create(ctx context.Context, req *v1.MeetingRequest) (*v1.MeetingReploy, error) {
+	println("dac_Create")
+	println(req)
 	m := Meeting{
 		Name:      req.Meeting.Name,
 		Address:   req.Meeting.Address,
-		state:     "1",
-		appdetail: "备注",
+		State:     "1",
+		AppDeatil: "备注",
 	}
+	resJson, _ := json.Marshal(req)
+	println("2dac_Create" + string(resJson))
 	var res v1.MeetingReploy
+	//go func(meeting Meeting) {
+	//	if me, err := json.Marshal(meeting); err != nil {
+	//		log.Info(err)
+	//		return
+	//	} else {
+	//		dac.data.rdb.Set(req.Meeting.Name, string(me), 1*time.Second).Err()
+	//	}
+	//}(m)
+	//
+	//res.Success = "true"
+	//res.Msg = "会议信息创建成功！"
+	//res.SaveRecode = 0
 
-	if err := dac.data.db.Save(m).Error; err != nil {
+	if err := dac.data.db.Create(&m).Error; err != nil {
 		res.Success = "false"
 		res.Msg = "会议信息创建失败！"
 		res.SaveRecode = 0
@@ -49,11 +68,17 @@ func (dac *meetingRepo) Create(ctx context.Context, req *v1.MeetingRequest) (*v1
 		go func(meeting Meeting) {
 			if me, err := json.Marshal(meeting); err != nil {
 				log.Info(err)
+				println(err.Error())
 				return
 			} else {
-				dac.data.rdb.Set(req.Meeting.Name, string(me), 1*time.Second).Err()
+				println(string(me))
+				err = dac.data.rdb.Set(meeting.Name, string(me), 0).Err()
+				if err != nil {
+					panic(err)
+				}
 			}
 		}(m)
-		return &res, err
 	}
+
+	return &res, nil
 }

@@ -7,14 +7,8 @@ import "google/api/annotations.proto";
 option go_package = "meeting/api/meeting/v1;v1";
 
 // The greeting service definition.
-service Greeter {
-  rpc Create (MeetingRequest) returns (MeetingReploy){
-        option (google.api.http) = {
-          post: "/meeting/create"
-          body:"*"
-        };
-  }
-
+service Meeting {
+  rpc Create (MeetingRequest) returns (MeetingReploy){}
 }
 
 message MeetingRequest{

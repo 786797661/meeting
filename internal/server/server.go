@@ -10,7 +10,7 @@ import (
 )
 
 // ProviderSet is server providers.
-var ProviderSet = wire.NewSet(NewHTTPServer, NewGRPCServer, NewRegistrar)
+var ProviderSet = wire.NewSet(NewHTTPServer, NewGRPCServer, NewRegistrar, NewDiscovery)
 
 // NewRegistrar 引入 consul
 func NewRegistrar(conf *conf.Registry) registry.Registrar {
@@ -18,6 +18,18 @@ func NewRegistrar(conf *conf.Registry) registry.Registrar {
 	c.Address = "127.0.0.1:8500"
 	c.Scheme = "http"
 
+	cli, err := consulAPI.NewClient(c)
+	if err != nil {
+		panic(err)
+	}
+	r := consul.New(cli, consul.WithHealthCheck(false))
+	return r
+}
+
+func NewDiscovery(conf *conf.Registry) registry.Discovery {
+	c := consulAPI.DefaultConfig()
+	c.Address = conf.Consul.Address
+	c.Scheme = conf.Consul.Scheme
 	cli, err := consulAPI.NewClient(c)
 	if err != nil {
 		panic(err)

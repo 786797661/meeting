@@ -17,22 +17,22 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-type GreeterHTTPServer interface {
+type MeetingHTTPServer interface {
 	Create(context.Context, *MeetingRequest) (*MeetingReploy, error)
 }
 
-func RegisterGreeterHTTPServer(s *http.Server, srv GreeterHTTPServer) {
+func RegisterMeetingHTTPServer(s *http.Server, srv MeetingHTTPServer) {
 	r := s.Route("/")
-	r.POST("/meeting/create", _Greeter_Create0_HTTP_Handler(srv))
+	r.POST("/meeting/create", _Meeting_Create0_HTTP_Handler(srv))
 }
 
-func _Greeter_Create0_HTTP_Handler(srv GreeterHTTPServer) func(ctx http.Context) error {
+func _Meeting_Create0_HTTP_Handler(srv MeetingHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in MeetingRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/helloworld.v1.Greeter/Create")
+		http.SetOperation(ctx, "/helloworld.v1.Meeting/Create")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.Create(ctx, req.(*MeetingRequest))
 		})
@@ -45,23 +45,23 @@ func _Greeter_Create0_HTTP_Handler(srv GreeterHTTPServer) func(ctx http.Context)
 	}
 }
 
-type GreeterHTTPClient interface {
+type MeetingHTTPClient interface {
 	Create(ctx context.Context, req *MeetingRequest, opts ...http.CallOption) (rsp *MeetingReploy, err error)
 }
 
-type GreeterHTTPClientImpl struct {
+type MeetingHTTPClientImpl struct {
 	cc *http.Client
 }
 
-func NewGreeterHTTPClient(client *http.Client) GreeterHTTPClient {
-	return &GreeterHTTPClientImpl{client}
+func NewMeetingHTTPClient(client *http.Client) MeetingHTTPClient {
+	return &MeetingHTTPClientImpl{client}
 }
 
-func (c *GreeterHTTPClientImpl) Create(ctx context.Context, in *MeetingRequest, opts ...http.CallOption) (*MeetingReploy, error) {
+func (c *MeetingHTTPClientImpl) Create(ctx context.Context, in *MeetingRequest, opts ...http.CallOption) (*MeetingReploy, error) {
 	var out MeetingReploy
 	pattern := "/meeting/create"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/helloworld.v1.Greeter/Create"))
+	opts = append(opts, http.Operation("/helloworld.v1.Meeting/Create"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
