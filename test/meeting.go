@@ -19,16 +19,19 @@ func main() {
 // Init 初始化 grpc 链接
 func Init() {
 	var err error
+
 	conn, err = grpc.Dial("127.0.0.1:9300", grpc.WithInsecure())
 	if err != nil {
 		panic("grpc link err" + err.Error())
 	}
 	meetingClient = v1.NewMeetingClient(conn)
+
 }
+
 func TestCreateMeeting() {
 	meeting := &v1.MeetingRequest_Meeting{
-		Name:      "NewRrandMeet2",
-		Address:   "祥原路",
+		Name:      "NewRrandMeet",
+		Address:   "疫情高风险区",
 		AppDeatil: "高峰论坛",
 	}
 	rsp, err := meetingClient.Create(context.Background(), &v1.MeetingRequest{

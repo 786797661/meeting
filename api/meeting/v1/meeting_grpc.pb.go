@@ -35,7 +35,7 @@ func NewMeetingClient(cc grpc.ClientConnInterface) MeetingClient {
 
 func (c *meetingClient) Create(ctx context.Context, in *MeetingRequest, opts ...grpc.CallOption) (*MeetingReploy, error) {
 	out := new(MeetingReploy)
-	err := c.cc.Invoke(ctx, "/helloworld.v1.Meeting/Create", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/meeting.v1.Meeting/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func _Meeting_Create_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/helloworld.v1.Meeting/Create",
+		FullMethod: "/meeting.v1.Meeting/Create",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MeetingServer).Create(ctx, req.(*MeetingRequest))
@@ -92,7 +92,7 @@ func _Meeting_Create_Handler(srv interface{}, ctx context.Context, dec func(inte
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Meeting_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "helloworld.v1.Meeting",
+	ServiceName: "meeting.v1.Meeting",
 	HandlerType: (*MeetingServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

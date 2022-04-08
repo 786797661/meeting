@@ -59,11 +59,32 @@ func (dac *meetingRepo) Create(ctx context.Context, req *v1.MeetingRequest) (*v1
 	//res.Msg = "会议信息创建成功！"
 	//res.SaveRecode = 0
 
-	if err := dac.data.db.Create(&m).Error; err != nil {
+	//if err := dac.data.db.Save(&m).Error; err != nil {
+	//	res.Success = "false"
+	//	res.Msg = "会议信息创建失败！"
+	//	res.SaveRecode = 0
+	//	return &res, errors.New(500, "Meet_Create", err.Error())
+	//} else {
+	//	go func(meeting Meeting) {
+	//		if me, err := json.Marshal(meeting); err != nil {
+	//			log.Info(err)
+	//			println(err.Error())
+	//			return
+	//		} else {
+	//			println(string(me))
+	//			err = dac.data.rdb.Set(meeting.Name, string(me), 0).Err()
+	//			if err != nil {
+	//				panic(err)
+	//			}
+	//		}
+	//	}(m)
+	//}
+	var meet Meeting
+	if err2 := dac.data.db.Model(&meet).Where("name=?", "NewRrandMeet").Updates(map[string]interface{}{"name": "小样"}).Error; err2 != nil {
 		res.Success = "false"
 		res.Msg = "会议信息创建失败！"
 		res.SaveRecode = 0
-		return &res, errors.New(500, "Meet_Create", err.Error())
+		return &res, errors.New(500, "Meet_Create", err2.Error())
 	} else {
 		go func(meeting Meeting) {
 			if me, err := json.Marshal(meeting); err != nil {
@@ -79,6 +100,5 @@ func (dac *meetingRepo) Create(ctx context.Context, req *v1.MeetingRequest) (*v1
 			}
 		}(m)
 	}
-
 	return &res, nil
 }

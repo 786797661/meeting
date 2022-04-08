@@ -9,6 +9,7 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/sdk/resource"
+	"go.opentelemetry.io/otel/trace"
 	"meeting/internal/conf"
 	"os"
 
@@ -53,25 +54,24 @@ func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server, rr registry.Reg
 }
 
 // Set global trace provider 设置链路追逐的方法
-func setTracerProvider(url string) error {
+func setTracerProvider(url string) (trace.TracerProvider, error) {
 	// Create the Jaeger exporter
 	exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(url)))
 	if err != nil {
-		return err
+		return nil, err
 	}
 	tp := tracesdk.NewTracerProvider(
-		// Set the sampling rate based on the parent span to 100%
-		tracesdk.WithSampler(tracesdk.ParentBased(tracesdk.TraceIDRatioBased(1.0))),
 		// Always be sure to batch in production.
 		tracesdk.WithBatcher(exp),
 		// Record information about this application in an Resource.
-		tracesdk.WithResource(resource.NewSchemaless(
-			semconv.ServiceNameKey.String(Name),
-			attribute.String("env", "dev"),
+		tracesdk.WithResource(resource.NewWithAttributes(
+			semconv.SchemaURL,
+			semconv.ServiceNameKey.String(Name),   //实例名称
+			attribute.String("environment", Name), // 相关环境
+			attribute.String("ID", Version),       //版本
 		)),
 	)
-	otel.SetTracerProvider(tp)
-	return nil
+	return tp, nil
 }
 
 func main() {
@@ -102,9 +102,12 @@ func main() {
 		panic(err)
 	}
 	//加入链路追踪的配置
-	if err := setTracerProvider(bc.Trace.Endpoint); err != nil {
+	tp, err := setTracerProvider(bc.Trace.Endpoint)
+	if err != nil {
 		panic(err)
 	}
+	//将tp作为全局链路追踪的提供程序
+	otel.SetTracerProvider(tp)
 
 	// consul 的引入
 	var rc conf.Registry

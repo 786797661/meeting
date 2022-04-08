@@ -28,6 +28,7 @@ func NewGRPCServer(c *conf.Server, greeter *service.MeetingService, logger log.L
 		opts = append(opts, grpc.Timeout(c.Grpc.Timeout.AsDuration()))
 	}
 	srv := grpc.NewServer(opts...)
+
 	v1.RegisterMeetingServer(srv, greeter)
 	return srv
 }
