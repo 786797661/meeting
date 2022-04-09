@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
@@ -110,9 +111,8 @@ func main() {
 	otel.SetTracerProvider(tp)
 
 	// consul 的引入
-	var rc conf.Registry
-
-	app, cleanup, err := initApp(bc.Server, bc.Data, &rc, logger)
+	fmt.Println("rc.Consul.Address" + bc.Registry.Consul.Address)
+	app, cleanup, err := initApp(bc.Server, bc.Data, bc.Registry, bc.Service, logger)
 	if err != nil {
 		println("main" + err.Error())
 		panic(err)

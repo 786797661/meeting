@@ -6,6 +6,7 @@ import (
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 	v1 "meeting/api/meeting/v1"
+	user "meeting/api/realworld/v1"
 	"meeting/internal/biz"
 )
 
@@ -79,6 +80,13 @@ func (dac *meetingRepo) Create(ctx context.Context, req *v1.MeetingRequest) (*v1
 	//		}
 	//	}(m)
 	//}
+	userReq := user.LoginRequestUser{
+		Email:    "786797661@qq.com",
+		Password: "100200",
+	}
+
+	reploy, _ := dac.data.user.Login(ctx, &user.LoginRequest{UserInfo: &userReq})
+	println(reploy.User.Username)
 	var meet Meeting
 	if err2 := dac.data.db.Model(&meet).Where("name=?", "NewRrandMeet").Updates(map[string]interface{}{"name": "小样"}).Error; err2 != nil {
 		res.Success = "false"

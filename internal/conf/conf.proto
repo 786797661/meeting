@@ -8,9 +8,9 @@ import "google/protobuf/duration.proto";
 message Bootstrap {
   Server server = 1;
   Data data = 2;
-    Trace trace=3;
-    Registry registry=4;
-    Service service=5;
+  Registry registry=3;
+  Trace trace=4;
+  Service service=5;
 }
 
 message Server {

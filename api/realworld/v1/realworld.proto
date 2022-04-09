@@ -1,0 +1,350 @@
+syntax = "proto3";
+
+package api.realworld.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "knsh/api/realworld/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.realworld.v1";
+
+service Realworld {
+  //定义RPC接口 登陆接口
+  rpc Login(LoginRequest) returns(LoginReply){
+    //定义一个HTTP接口
+    option (google.api.http) = {
+      post:"/api/users/login",
+      //将这个body解析到Request
+      body:"*"
+    };
+  }
+  //定义RPC接口 注册接口
+  rpc Registration(RegistraRequest) returns(UserInfoReply){
+    //定义一个HTTP接口
+    option (google.api.http) = {
+      post:"/api/users",
+      //将这个body解析到Request
+      body:"*"
+    };
+  }
+
+  //定义RPC接口 获取用户信息接口
+  rpc GetCurrentUser(GetCurrentUserRequest) returns(UserInfoReply){
+    //定义一个HTTP接口
+    option (google.api.http) = {
+      get:"/api/user"
+    };
+  }
+
+  //定义RPC接口 更新用户
+  rpc UpdateUser(UpdateUserRequest) returns(UserInfoReply){
+    //定义一个HTTP接口
+    option (google.api.http) = {
+      post:"/api/user",
+      //将这个body解析到Request
+      body:"*"
+    };
+  }
+
+
+	//定义RPC接口 获取评论
+	rpc GetProfile(GetProfileRequest) returns(Profile){
+		//定义一个HTTP接口
+		option (google.api.http) = {
+			get:"/api/user/{username}"
+		};
+	}
+
+  //定义RPC接口 获取评论
+  rpc FollowUser(FollowUserRequest) returns(Profile){
+    //定义一个HTTP接口
+    option (google.api.http) = {
+      post:"/api/profiles/{username}/follow",
+      body:"*"
+    };
+  }
+  //定义RPC接口 获取评论
+  rpc UnfollowUser(UnfollowUserRequest) returns(Profile){
+    //定义一个HTTP接口
+    option (google.api.http) = {
+      delete:"/api/profiles/{username}/follow"
+    };
+  }
+
+  //定义RPC接口 获取评论
+  rpc ListArticles(ListArticlesRequest) returns(MultipleArticles){
+    //定义一个HTTP接口
+    option (google.api.http) = {
+      get:"/api/articles",
+
+    };
+  }
+
+  //定义RPC接口 获取评论
+  rpc FeedArticles(FeedArticlesRequest) returns(MultipleArticles){
+    //定义一个HTTP接口
+    option (google.api.http) = {
+      get:"/api/articles/feed",
+
+    };
+  }
+  //定义RPC接口 获取评论
+  rpc GetArticle(GetArticleRequest) returns(SingleArticle){
+    //定义一个HTTP接口
+    option (google.api.http) = {
+      get:"/api/articles/{slug}"
+    };
+  }
+
+
+  //定义RPC接口 获取评论
+  rpc CreateArticle(CreateArticleRequest) returns(SingleArticle){
+    //定义一个HTTP接口
+    option (google.api.http) = {
+      post:"/api/articles",
+      body:"*"
+    };
+  }
+
+  //定义RPC接口 获取评论
+  rpc UpdateArticle(UpdateArticleRequest) returns(SingleArticle){
+    //定义一个HTTP接口
+    option (google.api.http) = {
+      post:"/api/articles/{slug}",
+      body:"*"
+    };
+  }
+
+
+  //定义RPC接口 获取评论
+  rpc DeleteArticle(DeleteArticleRequest) returns(DeleteArticleResponse){
+    //定义一个HTTP接口
+    option (google.api.http) = {
+      delete:"/api/articles/{slug}"
+    };
+  }
+
+  //定义RPC接口 获取评论
+  rpc AddCommentsToAnArticle(AddCommentsToAnArticleRequest) returns(SingleComment){
+    //定义一个HTTP接口
+    option (google.api.http) = {
+      post:"/api/articles/{slug}/comments",
+      body:"*"
+    };
+  }
+
+  //定义RPC接口 获取评论
+  rpc GetCommentsToAnArticle(GetCommentsToAnArticleRequest) returns(MultipleComments){
+    //定义一个HTTP接口
+    option (google.api.http) = {
+      get:"/api/articles/{slug}/comments"
+    };
+  }
+
+  //定义RPC接口 获取评论
+  rpc DeleteComment(DeleteCommentRequest) returns(DeleteCommentResponse){
+    //定义一个HTTP接口
+    option (google.api.http) = {
+      get:"/api/articles/{slug}/comments/{id}"
+    };
+  }
+
+  //定义RPC接口 获取评论
+  rpc FavoriteArticle(FavoriteArticleRequest) returns(SingleArticle){
+    //定义一个HTTP接口
+    option (google.api.http) = {
+      get:"/api/articles/{slug}/favorite"
+    };
+  }
+
+  //定义RPC接口 获取评论
+  rpc UnfavoriteArticle(UnfavoriteArticleRequest) returns(SingleArticle){
+    //定义一个HTTP接口
+    option (google.api.http) = {
+      delete:"/api/articles/{slug}/favorite"
+    };
+  }
+  //定义RPC接口 获取评论
+  rpc GetTags(GetTagsRequest) returns(Tags){
+    //定义一个HTTP接口
+    option (google.api.http) = {
+      get:"/api/tags"
+    };
+  }
+}
+
+message GetTagsRequest{
+
+}
+message UnfavoriteArticleRequest{
+string slug=1;
+}
+message FavoriteArticleRequest{
+  string slug=1;
+}
+message DeleteCommentRequest{
+string slug=1;
+int64 id=2;
+}
+message DeleteCommentResponse{
+
+}
+message GetCommentsToAnArticleRequest{
+string slug=1;
+}
+
+//message AddCommentsToAnArticleResponse{
+//  COMMENT comment=1;
+//}
+message AddCommentsToAnArticleRequest{
+    COMMENT comment=1;
+    string slug=2;
+}
+message DeleteArticleResponse{
+
+}
+message DeleteArticleRequest{
+  string slug =1;
+}
+
+message  UpdateArticleRequest{
+  string slug =1;
+  ARTICLE article=2;
+ }
+
+message LoginRequest{
+	message user{
+    string email=1;
+    string password=2;
+  }
+  user userInfo=1;
+}
+message LoginReply{
+	UserInfo user=1;
+}
+
+message RegistraRequest{
+	message user{
+    string username=1;
+    string email=2;
+    string password=3;
+  }
+    user userInfo=1;
+}
+
+message GetCurrentUserRequest{
+
+}
+
+
+message UserInfoReply{
+	UserInfo user=1;
+}
+message UpdateUserRequest{
+  message user{
+      string email=1;
+      string bio=2;
+      string image=3;
+  }
+  user userInfo =1;
+}
+
+message GetProfileRequest{
+  string username=1;
+}
+
+message FollowUserRequest{
+  string username=1;
+}
+message UnfollowUserRequest{
+  string username=1;
+}
+
+message ListArticlesRequest{
+  string tag=1;
+  string author=2;
+  string favorited=3;
+  int64 limit=4;
+  int64 offset=5;
+}
+
+
+
+message FeedArticlesRequest{
+  int64 limit=4;
+  int64 offset=5;
+}
+
+message GetArticleRequest{
+string slug=1;
+}
+
+message CreateArticleRequest{
+  message article{
+    string title=1;
+    string description=2;
+    string body=3;
+    repeated string tagList=4;
+  }
+    article articleInfo=1;
+}
+message UserInfo {
+  string email = 1;
+  string token = 2;
+  string username = 3;
+  string bio = 4;
+  string  image = 5;
+}
+
+message Profile {
+  string username = 1;
+  string bio = 2;
+  string image = 3;
+  bool following = 4;
+}
+
+
+message AUTHOR {
+  string bio = 1;
+  string image = 2;
+  bool following = 3;
+  string username = 4;
+}
+
+message ARTICLE {
+  string slug = 1;
+  string title = 2;
+  string description = 3;
+  string tagList = 4;
+  string createdAt = 5;
+  string updatedAt = 6;
+  bool favorited = 7;
+  double favoritesCount = 8;
+  string body = 9;
+  AUTHOR author = 10;
+}
+
+message SingleArticle{
+ ARTICLE article=1;
+}
+message MultipleArticles{
+  repeated ARTICLE articles = 1;
+  double articlesCount = 2;
+}
+
+message COMMENT {
+  double id = 1;
+  string createdAt = 2;
+  string updatedAt = 3;
+  string body = 4;
+  AUTHOR author = 5;
+}
+message MultipleComments{
+	repeated COMMENT comments=1;
+}
+message SingleComment{
+   COMMENT comment=1;
+}
+message Tags{
+	repeated	string tags=1;
+}

@@ -35,7 +35,7 @@ func NewMeetingClient(cc grpc.ClientConnInterface) MeetingClient {
 
 func (c *meetingClient) Create(ctx context.Context, in *MeetingRequest, opts ...grpc.CallOption) (*MeetingReploy, error) {
 	out := new(MeetingReploy)
-	err := c.cc.Invoke(ctx, "/meeting.v1.Meeting/Create", in, out, opts...)
+	err := c.cc.Invoke(ctx, "//Create", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
