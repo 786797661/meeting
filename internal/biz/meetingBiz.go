@@ -21,6 +21,7 @@ type Greeter struct {
 // GreeterRepo is a Greater repo.
 type MeetingRepo interface {
 	Create(context.Context, *v1.MeetingRequest) (*v1.MeetingReploy, error)
+	Register(context.Context, *v1.RegisterRequest) (*v1.RegisterReploy, error)
 }
 
 // GreeterUsecase is a Greeter usecase.
@@ -38,4 +39,9 @@ func NewMeetingGreeterUsecase(repo MeetingRepo, logger log.Logger) *MeetingGreet
 func (uc *MeetingGreeterUsecase) Create(ctx context.Context, req *v1.MeetingRequest) (*v1.MeetingReploy, error) {
 	//uc.log.WithContext(ctx).Infof("Create: %v", req.Meeting.Name)
 	return uc.repo.Create(ctx, req)
+}
+
+func (uc *MeetingGreeterUsecase) Register(ctx context.Context, req *v1.RegisterRequest) (*v1.RegisterReploy, error) {
+	//uc.log.WithContext(ctx).Infof("Create: %v", req.Meeting.Name)
+	return uc.repo.Register(ctx, req)
 }

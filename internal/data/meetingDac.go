@@ -8,6 +8,7 @@ import (
 	v1 "meeting/api/meeting/v1"
 	user "meeting/api/realworld/v1"
 	"meeting/internal/biz"
+	"strconv"
 )
 
 type Meeting struct {
@@ -84,7 +85,6 @@ func (dac *meetingRepo) Create(ctx context.Context, req *v1.MeetingRequest) (*v1
 		Email:    "786797661@qq.com",
 		Password: "100200",
 	}
-
 	reploy, _ := dac.data.user.Login(ctx, &user.LoginRequest{UserInfo: &userReq})
 	println(reploy.User.Username)
 	var meet Meeting
@@ -108,5 +108,20 @@ func (dac *meetingRepo) Create(ctx context.Context, req *v1.MeetingRequest) (*v1
 			}
 		}(m)
 	}
+	return &res, nil
+}
+
+func (dac *meetingRepo) Register(ctx context.Context, req *v1.RegisterRequest) (*v1.RegisterReploy, error) {
+	c, _ := strconv.Atoi(dac.data.rdb.Get(req.Meeting.Name).Val())
+	var res v1.RegisterReploy
+	if c > 25 {
+		res.Success = "false"
+		res.Msg = "超过与会人数"
+		return &res, nil
+	}
+	c++
+	dac.data.rdb.Set(req.Meeting.Name, c, 0)
+	res.Success = "true"
+	res.Msg = "注册成功"
 	return &res, nil
 }
