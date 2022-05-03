@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MeetingClient interface {
 	Create(ctx context.Context, in *MeetingRequest, opts ...grpc.CallOption) (*MeetingReploy, error)
+	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterReploy, error)
 }
 
 type meetingClient struct {
@@ -35,7 +36,16 @@ func NewMeetingClient(cc grpc.ClientConnInterface) MeetingClient {
 
 func (c *meetingClient) Create(ctx context.Context, in *MeetingRequest, opts ...grpc.CallOption) (*MeetingReploy, error) {
 	out := new(MeetingReploy)
-	err := c.cc.Invoke(ctx, "//Create", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/meeting.v1.Meeting/Create", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *meetingClient) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterReploy, error) {
+	out := new(RegisterReploy)
+	err := c.cc.Invoke(ctx, "/meeting.v1.Meeting/Register", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -47,6 +57,7 @@ func (c *meetingClient) Create(ctx context.Context, in *MeetingRequest, opts ...
 // for forward compatibility
 type MeetingServer interface {
 	Create(context.Context, *MeetingRequest) (*MeetingReploy, error)
+	Register(context.Context, *RegisterRequest) (*RegisterReploy, error)
 	mustEmbedUnimplementedMeetingServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedMeetingServer struct {
 
 func (UnimplementedMeetingServer) Create(context.Context, *MeetingRequest) (*MeetingReploy, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedMeetingServer) Register(context.Context, *RegisterRequest) (*RegisterReploy, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
 func (UnimplementedMeetingServer) mustEmbedUnimplementedMeetingServer() {}
 
@@ -88,6 +102,24 @@ func _Meeting_Create_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Meeting_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MeetingServer).Register(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/meeting.v1.Meeting/Register",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MeetingServer).Register(ctx, req.(*RegisterRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Meeting_ServiceDesc is the grpc.ServiceDesc for Meeting service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var Meeting_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Create",
 			Handler:    _Meeting_Create_Handler,
+		},
+		{
+			MethodName: "Register",
+			Handler:    _Meeting_Register_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

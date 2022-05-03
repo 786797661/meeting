@@ -3,8 +3,599 @@
 
 openapi: 3.0.3
 info:
-    title: ""
+    title: Realworld API
     version: 0.0.1
-paths: {}
+paths:
+    /api/articles:
+        get:
+            tags:
+                - Realworld
+            description: 定义RPC接口 获取评论
+            operationId: Realworld_ListArticles
+            parameters:
+                - name: tag
+                  in: query
+                  schema:
+                    type: string
+                - name: author
+                  in: query
+                  schema:
+                    type: string
+                - name: favorited
+                  in: query
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  schema:
+                    type: integer
+                    format: int64
+                - name: offset
+                  in: query
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MultipleArticles'
+        post:
+            tags:
+                - Realworld
+            description: 定义RPC接口 获取评论
+            operationId: Realworld_CreateArticle
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateArticleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SingleArticle'
+    /api/articles/feed:
+        get:
+            tags:
+                - Realworld
+            description: 定义RPC接口 获取评论
+            operationId: Realworld_FeedArticles
+            parameters:
+                - name: limit
+                  in: query
+                  schema:
+                    type: integer
+                    format: int64
+                - name: offset
+                  in: query
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MultipleArticles'
+    /api/articles/{slug}:
+        get:
+            tags:
+                - Realworld
+            description: 定义RPC接口 获取评论
+            operationId: Realworld_GetArticle
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SingleArticle'
+        post:
+            tags:
+                - Realworld
+            description: 定义RPC接口 获取评论
+            operationId: Realworld_UpdateArticle
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateArticleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SingleArticle'
+        delete:
+            tags:
+                - Realworld
+            description: 定义RPC接口 获取评论
+            operationId: Realworld_DeleteArticle
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteArticleResponse'
+    /api/articles/{slug}/comments:
+        get:
+            tags:
+                - Realworld
+            description: 定义RPC接口 获取评论
+            operationId: Realworld_GetCommentsToAnArticle
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MultipleComments'
+        post:
+            tags:
+                - Realworld
+            description: 定义RPC接口 获取评论
+            operationId: Realworld_AddCommentsToAnArticle
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AddCommentsToAnArticleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SingleComment'
+    /api/articles/{slug}/comments/{id}:
+        get:
+            tags:
+                - Realworld
+            description: 定义RPC接口 获取评论
+            operationId: Realworld_DeleteComment
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteCommentResponse'
+    /api/articles/{slug}/favorite:
+        get:
+            tags:
+                - Realworld
+            description: 定义RPC接口 获取评论
+            operationId: Realworld_FavoriteArticle
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SingleArticle'
+        delete:
+            tags:
+                - Realworld
+            description: 定义RPC接口 获取评论
+            operationId: Realworld_UnfavoriteArticle
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SingleArticle'
+    /api/profiles/{username}/follow:
+        post:
+            tags:
+                - Realworld
+            description: 定义RPC接口 获取评论
+            operationId: Realworld_FollowUser
+            parameters:
+                - name: username
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/FollowUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Profile'
+        delete:
+            tags:
+                - Realworld
+            description: 定义RPC接口 获取评论
+            operationId: Realworld_UnfollowUser
+            parameters:
+                - name: username
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Profile'
+    /api/tags:
+        get:
+            tags:
+                - Realworld
+            description: 定义RPC接口 获取评论
+            operationId: Realworld_GetTags
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Tags'
+    /api/user:
+        get:
+            tags:
+                - Realworld
+            description: 定义RPC接口 获取用户信息接口
+            operationId: Realworld_GetCurrentUser
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UserInfoReply'
+        post:
+            tags:
+                - Realworld
+            description: 定义RPC接口 更新用户
+            operationId: Realworld_UpdateUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UserInfoReply'
+    /api/user/{username}:
+        get:
+            tags:
+                - Realworld
+            description: 定义RPC接口 获取评论
+            operationId: Realworld_GetProfile
+            parameters:
+                - name: username
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Profile'
+    /api/users:
+        post:
+            tags:
+                - Realworld
+            description: 定义RPC接口 注册接口
+            operationId: Realworld_Registration
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/RegistraRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UserInfoReply'
+    /api/users/login:
+        post:
+            tags:
+                - Realworld
+            description: 定义RPC接口 登陆接口
+            operationId: Realworld_Login
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/LoginRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/LoginReply'
 components:
-    schemas: {}
+    schemas:
+        ARTICLE:
+            type: object
+            properties:
+                slug:
+                    type: string
+                title:
+                    type: string
+                description:
+                    type: string
+                tagList:
+                    type: string
+                createdAt:
+                    type: string
+                updatedAt:
+                    type: string
+                favorited:
+                    type: boolean
+                favoritesCount:
+                    type: number
+                    format: double
+                body:
+                    type: string
+                author:
+                    $ref: '#/components/schemas/AUTHOR'
+        AUTHOR:
+            type: object
+            properties:
+                bio:
+                    type: string
+                image:
+                    type: string
+                following:
+                    type: boolean
+                username:
+                    type: string
+        AddCommentsToAnArticleRequest:
+            type: object
+            properties:
+                comment:
+                    $ref: '#/components/schemas/COMMENT'
+                slug:
+                    type: string
+            description: message AddCommentsToAnArticleResponse{  COMMENT comment=1;}
+        COMMENT:
+            type: object
+            properties:
+                id:
+                    type: number
+                    format: double
+                createdAt:
+                    type: string
+                updatedAt:
+                    type: string
+                body:
+                    type: string
+                author:
+                    $ref: '#/components/schemas/AUTHOR'
+        CreateArticleRequest:
+            type: object
+            properties:
+                articleInfo:
+                    $ref: '#/components/schemas/CreateArticleRequest_article'
+        CreateArticleRequest_article:
+            type: object
+            properties:
+                title:
+                    type: string
+                description:
+                    type: string
+                body:
+                    type: string
+                tagList:
+                    type: array
+                    items:
+                        type: string
+        DeleteArticleResponse:
+            type: object
+            properties: {}
+        DeleteCommentResponse:
+            type: object
+            properties: {}
+        FollowUserRequest:
+            type: object
+            properties:
+                username:
+                    type: string
+        LoginReply:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/UserInfo'
+        LoginRequest:
+            type: object
+            properties:
+                userInfo:
+                    $ref: '#/components/schemas/LoginRequest_user'
+        LoginRequest_user:
+            type: object
+            properties:
+                email:
+                    type: string
+                password:
+                    type: string
+        MultipleArticles:
+            type: object
+            properties:
+                articles:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ARTICLE'
+                articlesCount:
+                    type: number
+                    format: double
+        MultipleComments:
+            type: object
+            properties:
+                comments:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/COMMENT'
+        Profile:
+            type: object
+            properties:
+                username:
+                    type: string
+                bio:
+                    type: string
+                image:
+                    type: string
+                following:
+                    type: boolean
+        RegistraRequest:
+            type: object
+            properties:
+                userInfo:
+                    $ref: '#/components/schemas/RegistraRequest_user'
+        RegistraRequest_user:
+            type: object
+            properties:
+                username:
+                    type: string
+                email:
+                    type: string
+                password:
+                    type: string
+        SingleArticle:
+            type: object
+            properties:
+                article:
+                    $ref: '#/components/schemas/ARTICLE'
+        SingleComment:
+            type: object
+            properties:
+                comment:
+                    $ref: '#/components/schemas/COMMENT'
+        Tags:
+            type: object
+            properties:
+                tags:
+                    type: array
+                    items:
+                        type: string
+        UpdateArticleRequest:
+            type: object
+            properties:
+                slug:
+                    type: string
+                article:
+                    $ref: '#/components/schemas/ARTICLE'
+        UpdateUserRequest:
+            type: object
+            properties:
+                userInfo:
+                    $ref: '#/components/schemas/UpdateUserRequest_user'
+        UpdateUserRequest_user:
+            type: object
+            properties:
+                email:
+                    type: string
+                bio:
+                    type: string
+                image:
+                    type: string
+        UserInfo:
+            type: object
+            properties:
+                email:
+                    type: string
+                token:
+                    type: string
+                username:
+                    type: string
+                bio:
+                    type: string
+                image:
+                    type: string
+        UserInfoReply:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/UserInfo'
+tags:
+    - name: Realworld

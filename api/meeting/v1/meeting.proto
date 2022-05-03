@@ -9,6 +9,7 @@ option go_package = "meeting/api/meeting/v1;v1";
 // The greeting service definition.
 service Meeting {
   rpc Create (MeetingRequest) returns (MeetingReploy){}
+  rpc Register (RegisterRequest) returns (RegisterReploy){}
 }
 
 message MeetingRequest{
@@ -23,4 +24,14 @@ message MeetingReploy{
   string success=1;
   string msg=2;
   int64 saveRecode=3;
+}
+message RegisterRequest{
+  message Meeting{
+    string Name=1;
+  }
+  Meeting meeting=1;
+}
+message RegisterReploy{
+  string success=1;
+  string msg=2;
 }
