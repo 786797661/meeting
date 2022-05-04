@@ -7,6 +7,7 @@ import (
 	v1 "meeting/api/meeting/v1"
 	"sync"
 	"sync/atomic"
+	"time"
 )
 
 var meetingClient v1.MeetingClient
@@ -178,6 +179,22 @@ func TestCreateMeeting() {
 		AppDeatil: "高峰论坛",
 	}
 	rsp, err := meetingClient.Create(context.Background(), &v1.MeetingRequest{
+		Meeting: meeting,
+	})
+	if err != nil {
+		panic("grpc 创建失败" + err.Error())
+	}
+	fmt.Println(rsp)
+}
+
+func TestRegisterMeeting() {
+	//建立链接
+	meeting := &v1.RegisterRequest_Meeting{
+		Name: "NewRrandMeet",
+	}
+	ctx, _ := context.WithTimeout(context.Background(), time.Second)
+	ctx = context.WithValue(ctx, "UserId", "001")
+	rsp, err := meetingClient.Register(ctx, &v1.RegisterRequest{
 		Meeting: meeting,
 	})
 	if err != nil {
